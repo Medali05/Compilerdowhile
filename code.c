@@ -1,19 +1,28 @@
-#include <stdio.h>  // bibliothèque standard
-
+#include <stdio.h>
+mohamed_ali;
 int main() {
-    int x = 10;
-    int y = 20;
-    int c;
+    int nombre = 7;           // Nombre déjà initialisé
+    char nom[] = "Mohamed";   // Chaîne déjà initialisée
+    char initiale = 'M';      // Caractère déjà initialisé
 
-  do{  // Calcul de la somme
-    c = x + y;
+    // Boucle do...while pour vérifier que le nombre est positif
+    do {
+        if (nombre <= 0) {
+            printf("Erreur ! Le nombre doit être positif.\n");
+            nombre = 5; // On peut réinitialiser ici si besoin
+        }
+    } while (nombre <= 0);
 
-    printf(" %d ", c);}while(x);
+    // Vérification pair ou impair
+    if (nombre % 2 == 0) {
+        printf("Le nombre %d est pair.\n", nombre);
+    } else {
+        printf("Le nombre %d est impair.\n", nombre);
+    }
 
-    /*
-       Ceci est un commentaire
-       sur plusieurs lignes
-    */
+    // Affichage de la chaîne et du caractère
+    printf("Nom : %s\n", nom);
+    printf("Initiale : %c\n", initiale);
 
     return 0;
 }

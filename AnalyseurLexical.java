@@ -9,12 +9,12 @@ public class AnalyseurLexical {
         try (BufferedReader br = new BufferedReader(new FileReader(chemin))) {
 
             int car;
-            String lexeme = "";
-            boolean ignoreDirective = false;
+            String lexeme = ""; //le lexeème ou l'espace ou on va stocker les caractères jusqu'a avoir un lexème
+            boolean ignoreDirective = false;  
             boolean ignoreCommentaireLigne = false;
             boolean ignoreCommentaireBloc = false;
 
-            while ((car = br.read()) != -1) {
+            while ((car = br.read()) != -1) {  //lire le fichier caarctère par caractère
                 char c = (char) car;
 
                 // Ignorer directives #include
@@ -28,7 +28,7 @@ public class AnalyseurLexical {
                     continue;
                 }
 
-                // Début commentaires
+                // Début commentaires s'il est un commentaire on l'ignore
                 if (!ignoreCommentaireLigne && !ignoreCommentaireBloc) {
                     if (c == '/') {
                         br.mark(1);
@@ -50,6 +50,7 @@ public class AnalyseurLexical {
                     if (c == '\n' || c == '\r') ignoreCommentaireLigne = false;
                     continue;
                 }
+
                 if (ignoreCommentaireBloc) {
                     if (c == '*') {
                         br.mark(1);
@@ -60,7 +61,7 @@ public class AnalyseurLexical {
                     continue;
                 }
 
-                // Début d'une chaîne
+                // Début d'une chaîne exemple (a l'interieur d'un printf).
                 if (c == '"') {
                     String chaine = "\"";
                     while ((car = br.read()) != -1) {
@@ -82,14 +83,17 @@ public class AnalyseurLexical {
                 }
 
                 // Séparateur
-                if (LexicalUtils.estSeparateur("" + c)) {
-                    if (lexeme.length() > 0) {
+                if (LexicalUtils.estSeparateur("" + c)) {  //"" + c  transforme le caractère en chaîne de caractères (String) en le concaténant avec une chaîne vide ("").
+                   
+                if (lexeme.length() > 0) {
                         afficherLexeme(lexeme);
                         lexeme = "";
+
                     }
                     System.out.println(c + " --> Séparateur");
                     continue;
                 }
+
 
                 // Opérateur simple
                 if (LexicalUtils.estOperateur("" + c)) {
@@ -101,6 +105,22 @@ public class AnalyseurLexical {
                     continue;
                 }
 
+
+               /* if (LexicalUtils.estChaine("" + c)) {
+                    
+                        afficherLexeme(lexeme);
+                        lexeme = "";
+                  
+                    System.out.println(c + " --> constante chaine de caractère");
+                    continue;
+                }*/  
+
+                 if (LexicalUtils.estcaractere("" + c)) {
+                        afficherLexeme(lexeme);
+                        lexeme = "";
+                    System.out.println(c + " --> constante caractere");
+                    continue;
+                }
                 // Sinon : construction du lexème
                 lexeme = lexeme + c;
             }
@@ -111,7 +131,7 @@ public class AnalyseurLexical {
             }
 
         } catch (IOException e) {
-            System.out.println("Erreur lecture fichier : " + e.getMessage());
+            System.out.println("Erreur lecture fichier : " + e.getMessage()); //si on rencontre un problème dans la lecture du fichier
         }
 
         if (erreur)
@@ -123,9 +143,10 @@ public class AnalyseurLexical {
     private static void afficherLexeme(String lex) {
         if (lex == null || lex.length() == 0) return;
 
-        if (LexicalUtils.estMotCle(lex)) System.out.println(lex + " --> Mot-clé");
-        else if (LexicalUtils.estIdentificateur(lex)) System.out.println(lex + " --> Identificateur");
-        else if (LexicalUtils.estNombre(lex)) System.out.println(lex + " --> Nombre");
+        if (LexicalUtils.estMotCle(lex)) System.out.println(lex + " --> Mot-clé ");
+        else if (LexicalUtils.estIdentificateur(lex)) System.out.println(lex + " --> Identificateur ");
+        else if (LexicalUtils.estNombre(lex)) System.out.println(lex + " --> Nombre ");
+        else if (LexicalUtils.estcaractere(lex)) System.out.println(lex + "--> caractrère ");
         else {
             System.out.println(lex + " --> ERREUR LEXICALE");
             erreur = true;
@@ -133,6 +154,6 @@ public class AnalyseurLexical {
     }
 
     public static void main(String[] args) {
-        analyser("C:\\Users\\victus\\Desktop\\DoWhile\\analyseurdowhile\\code.c"); // mettre le chemin correct vers ton fichier C
+        analyser("C:\\Users\\victus\\Desktop\\DoWhile\\analyseurdowhile\\code.c"); // mettre le chemin correct vers ton fichier C pour le lire .
     }
 }
